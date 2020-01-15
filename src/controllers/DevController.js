@@ -39,12 +39,41 @@ module.exports = {
         return response.json(dev);
     },
 
-    async update() {
-        // Nome, Avatar, Bio, Location, Techs
+    async update(request, response) {
+        const { id } = request.params;
+
+        const dev = await Dev.findById(id);
+
+        const { name = dev.name, avatar_url = dev.avatar_url, bio = dev.bio, techs, latitude, longitude } = request.body;
+
+        dev.name = name;
+        dev.avatar_url = avatar_url;
+        dev.bio = bio;
+        if(techs){
+            const techsArray = parseStringAsArray(techs);
+            dev.techs = techsArray;
+        }
+        if(latitude && longitude){
+            const location = {
+                type: 'Point',
+                coordinates: [longitude, latitude],
+            }
+            dev.location = location;
+        }
+
+        await dev.save();
+
+        return response.json(dev);
 
     },
 
-    async destroy() {
+    async destroy(request, response) {
+        const { id } = request.params;
 
+        const dev = await Dev.findById(id);
+
+        await Dev.deleteOne({ _id: dev._id });
+
+        return response.json("Usuário excluído");
     },
 }
