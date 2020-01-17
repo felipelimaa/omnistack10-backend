@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const routes = require('./routes');
 
 const app = express();
@@ -9,6 +10,8 @@ mongoose.connect('mongodb+srv://api_backend:P@ssw0rd@cluster0-rsfl1.mongodb.net/
     useUnifiedTopology: true
 });
 
+// Liberando acesso externo para todo tipo de aplicação
+app.use(cors());
 // Configuração para o express entender json em todas as rotas
 app.use(express.json());
 // Habilitando as rotas para uso
